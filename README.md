@@ -10,6 +10,14 @@ First, prepare the environment
 pip install git+https://github.com/haoheliu/audioldm_eval
 ```
 
+To evaluate the generated audio,
+```shell
+python tage \
+  --generated-audio-dir '/directory/to/generated/audio' \
+  --target-audio-dir '/directory/to/target/audio' \
+  --reference_text_path '/path/to/reference/text/json'
+```
+
 ## Evaluation metrics
 We have the following metrics in this toolbox: 
 
