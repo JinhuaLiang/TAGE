@@ -16,3 +16,4 @@ build
 dist
 *.pkl
 pickle_check.py
+*.sh

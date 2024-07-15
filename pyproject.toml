@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tage"
+version = "0.1.0"
+description = "Dependence for TAGE"
+authors = [
+  { name = "Jinhua Liang", email = "liangjh0903@gmail.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.6"
+dependencies = [
+    "basicsr",
+    "torch == 2.0.1",
+    "torchaudio==2.0.2",
+    "diffusers == 0.20.0",
+    "xformers == 0.0.21",
+    "transformers == 4.30.1",
+    "einops",
+    "pytorch_lightning",
+    "omegaconf",
+    "gradio==3.50.2",
+    "librosa",
+    "laion-clap",
+    "julius",
+    "ssr-eval",
+]
