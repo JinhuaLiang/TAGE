@@ -4,10 +4,9 @@ This toolbox aims to evaluate audio generative model for a fair comparison.
 
 ## Quick Start
 
-For now, ones should quickly setup environment using `Audioldm_eval` kit.
 First, prepare the environment
 ```shell
-pip install git+https://github.com/haoheliu/audioldm_eval
+pip install git+https://github.com/JinhuaLiang/TAGE
 ```
 
 To evaluate the generated audio,
@@ -44,7 +43,7 @@ In the unpaired mode, these metrics will return minus one.
 
 ## TODO
 
-- [ ] Environment setup
+- [x] Environment setup
 - [ ] Test run
 - [ ] finish doc
 
@@ -71,5 +70,6 @@ If you found this tool useful, please also consider citing
 }
 ```
 ## Reference
-
+This repo is built upon Haohe's and Manor's repo:
 > https://github.com/haoheliu/audioldm_eval
+> https://github.com/HilaManor/AudioEditingCode
