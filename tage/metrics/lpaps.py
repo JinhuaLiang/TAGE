@@ -181,32 +181,3 @@ class LPAPS(nn.Module, MetricMixin):
     def float32_to_int16(x):
         x = np.clip(x, a_min=-1., a_max=1.)
         return (x * 32767.).astype(np.int16)
-
-
-if __name__ == "__main__":
-    # from engine import debugger
-    from engine import load_json
-
-    lpaps = LPAPS()
-    # Use paired data by specifying dir without windows
-    res = lpaps(
-        generated_audio_path="/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/remove/mini_data", 
-        reference_audio_path="/mnt/bn/jliang-lq-nas/workplace/SoundEdit-TrainingFree/outputs/remove/remove-TEST-noTan-withText-ES1.6-New",
-        )
-    # Use paired data by loading file lists with windows
-    json_path = "/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/remove/mini_data/val.json"
-    data = load_json(json_path)
-    duration_dict = {}
-    for datum in data:
-        duration_dict[datum["target_audio"]["audio_path"]] = datum["edit"]["timestamps"]
-
-    gen_audio_files = lpaps.maybe_collate_data("/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/remove/mini_data")
-    ref_audio_files = lpaps.maybe_collate_data("/mnt/bn/jliang-lq-nas/workplace/SoundEdit-TrainingFree/outputs/remove/remove-TEST-noTan-withText-ES1.6-New")
-    durations = [duration_dict[f] for f in gen_audio_files]
-    res = lpaps(
-        generated_audio_path="/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/remove/mini_data", 
-        reference_audio_path="/mnt/bn/jliang-lq-nas/workplace/SoundEdit-TrainingFree/outputs/remove/remove-TEST-noTan-withText-ES1.6-New",
-        generated_edit_duration=durations,
-        reference_edit_duration=durations,
-        )
-    import ipdb; ipdb.set_trace()
