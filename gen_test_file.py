@@ -21,6 +21,8 @@ flags.DEFINE_string(
     "test_files", "", "Directory where the test files should be located"
 )
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 def create_dir(output_dir):
     """Ignore directory exists error."""
@@ -80,11 +82,11 @@ def main(argv):
         frequencies = np.linspace(100, 1000, count).tolist()
         for freq in frequencies:
             samples = gen_sine_wave(freq, param=param)
-            filename = os.path.join(output_dir, "sin_%.0f.wav" % freq)
+            filename = os.path.join(current_dir, output_dir, "sin_%.0f.wav" % freq)
             print("Creating: %s with %i samples." % (filename, samples.shape[0]))
             scipy.io.wavfile.write(filename, _SAMPLE_RATE, samples)
             meta[filename] = {
-                'caption': f"A {freq}Hz sine wave.",
+                'caption': f"A {freq:.2f}Hz sine wave.",
                 'window': [0, 10]
             }
 
