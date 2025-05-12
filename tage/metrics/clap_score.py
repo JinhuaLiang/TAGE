@@ -162,38 +162,3 @@ class CLAPScore(nn.Module, MetricMixin):
     def float32_to_int16(x):
         x = np.clip(x, a_min=-1., a_max=1.)
         return (x * 32767.).astype(np.int16)
-
-
-if __name__ == "__main__":
-    # from engine import load_json, write_json
-
-    # def generate_json(json_pth, out_pth):
-    #     ori_data = load_json(json_pth)
-    #     out = {}
-    #     for datum in ori_data:
-    #         basename = os.path.basename(datum['target_audio']['audio_path'])
-    #         cap = datum['edit']['event']
-    #         win = datum['edit']['timestamps']
-    #         out[basename] = {'caption': cap, 'window': win}
-    #     write_json(out, out_pth)
-
-    # generate_json(
-    #     json_pth='/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/add/val.json',
-    #     out_pth='/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/add/val-gt-with_win.json',
-    #     )
-
-    csc = CLAPScore()
-    
-    # # Use paired data by specifying dir without windows
-    res = csc(
-        generated_audio_path='/data/scratch/eey340/data_package/SoundEdit-TrainingFree/style_transfer/generation', 
-        reference_text_path='/data/EECS-MachineListeningLab/datasets/AudioSet-E/dataset/mldbdown/eval-without_source_caption-subset.json',
-        )
-    print(res)
-    # # Use paired data by loading file lists with windows
-    # res = csc(
-    #     generated_audio_path='/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/add/mini_mini_data', 
-    #     reference_text_path='/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/add/val-gt.json',
-    #     )
-   
-    import ipdb; ipdb.set_trace()
