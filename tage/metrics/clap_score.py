@@ -76,9 +76,9 @@ class CLAPScore(nn.Module, MetricMixin):
         for aud in audio:
             aud_basename = os.path.basename(aud)
             try:
-                cap = meta[aud_basename]['caption']  # type list
+                cap = meta[aud_basename]['caption']  # type str
                 win = meta[aud_basename].get('window', None)
-                captions.extend(cap)
+                captions.append(cap)
                 windows.append(win)
             except KeyError as e:
                 missing_files.append(aud)
@@ -88,6 +88,7 @@ class CLAPScore(nn.Module, MetricMixin):
         
         return captions, windows
     
+    @torch.no_grad()
     def forward(self,
                 generated_audio_path: Union[list, str], 
                 reference_text_path: Union[dict, str, None] = None,
@@ -103,8 +104,6 @@ class CLAPScore(nn.Module, MetricMixin):
 
         reference_meta = self.load_json(reference_text_path)
         ref_captions, windows = self.get_paired_captions_with_window(reference_meta, gen_audio_files)
-        # Format reference caption with the predefined template
-        ref_captions = [text_template.format(cap) for cap in ref_captions]
 
         if windows[0] is None:
             log.warning(f"CLAP score is now calculated on the whole segment. Please check if this is expected.")
@@ -121,6 +120,7 @@ class CLAPScore(nn.Module, MetricMixin):
                     gen_masks.append(gen_m)
                     pbar.update(1)
                 gen_embeds = self.batch_encode_audio_with_mask(gen_waveforms, mask=gen_masks)
+                del gen_waveforms
             self.dump_intermediate_result(gen_embeds.detach().cpu(), gen_cache_pth)
         else:
             gen_embeds = self.load_intermediate_result(gen_cache_pth)
@@ -147,6 +147,7 @@ class CLAPScore(nn.Module, MetricMixin):
         pkg = load_state_dict(path)
         pkg.pop('text_branch.embeddings.position_ids', None)
         clap_model.model.load_state_dict(pkg)
+        del pkg
 
     def load_json(self, json_path: str):
         with open(json_path, 'r') as f:
@@ -164,18 +165,17 @@ class CLAPScore(nn.Module, MetricMixin):
 
 
 if __name__ == "__main__":
-    from engine import debugger
-    from engine import load_json, write_json
+    # from engine import load_json, write_json
 
-    def generate_json(json_pth, out_pth):
-        ori_data = load_json(json_pth)
-        out = {}
-        for datum in ori_data:
-            basename = os.path.basename(datum['target_audio']['audio_path'])
-            cap = datum['edit']['event']
-            win = datum['edit']['timestamps']
-            out[basename] = {'caption': cap, 'window': win}
-        write_json(out, out_pth)
+    # def generate_json(json_pth, out_pth):
+    #     ori_data = load_json(json_pth)
+    #     out = {}
+    #     for datum in ori_data:
+    #         basename = os.path.basename(datum['target_audio']['audio_path'])
+    #         cap = datum['edit']['event']
+    #         win = datum['edit']['timestamps']
+    #         out[basename] = {'caption': cap, 'window': win}
+    #     write_json(out, out_pth)
 
     # generate_json(
     #     json_pth='/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/add/val.json',
@@ -186,10 +186,10 @@ if __name__ == "__main__":
     
     # # Use paired data by specifying dir without windows
     res = csc(
-        generated_audio_path='/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/add/mini_mini_data', 
-        reference_text_path='/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/add/val-gt-without_win.json',
+        generated_audio_path='/data/scratch/eey340/data_package/SoundEdit-TrainingFree/style_transfer/generation', 
+        reference_text_path='/data/EECS-MachineListeningLab/datasets/AudioSet-E/dataset/mldbdown/eval-without_source_caption-subset.json',
         )
-
+    print(res)
     # # Use paired data by loading file lists with windows
     # res = csc(
     #     generated_audio_path='/mnt/bn/jliang-lq-nas/workplace/AudioSet-E/dataset/add/mini_mini_data', 

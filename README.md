@@ -44,7 +44,7 @@ In the unpaired mode, these metrics will return minus one.
 ## TODO
 
 - [x] Environment setup
-- [ ] Test run
+- [x] Test run
 - [ ] finish doc
 
 ## Cite this repo
@@ -58,6 +58,7 @@ If you found this tool useful, please also consider citing
   year={2023}
 }
 ```
+
 ```bibtex
 @misc{manor2024zeroshotunsupervisedtextbasedaudio,
       title={Zero-Shot Unsupervised and Text-Based Audio Editing Using DDPM Inversion}, 
@@ -72,4 +73,5 @@ If you found this tool useful, please also consider citing
 ## Reference
 This repo is built upon Haohe's and Manor's repo:
 > https://github.com/haoheliu/audioldm_eval
+
 > https://github.com/HilaManor/AudioEditingCode

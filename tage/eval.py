@@ -216,7 +216,7 @@ class EvaluationHelper:
         recalculate=False,
         num_workers=6,
     ):
-        torch.manual_seed(0)
+        torch.manual_seed(42)
 
         outputloader = DataLoader(
             WaveDataset(
@@ -239,6 +239,7 @@ class EvaluationHelper:
             sampler=None,
             num_workers=num_workers,
         )
+
 
         out, summary = OmegaConf.create(), []
 
@@ -312,12 +313,12 @@ class EvaluationHelper:
         summary.append(f'IS: {metric_isc.result}')
 
         r"""Calculate FD."""
-        if "2048" in featuresdict_1.keys() and "2048" in featuresdict_2.keys():
-            metric_fid = calculate_fid(
-                featuresdict_1, featuresdict_2, feat_layer_name="2048"
-            )
-            out.update({'Frechet Distance (FD)': metric_fid.to_dict()})
-            summary.append(f'FD: {metric_fid.result}')
+        # if "2048" in featuresdict_1.keys() and "2048" in featuresdict_2.keys():
+        #     metric_fid = calculate_fid(
+        #         featuresdict_1, featuresdict_2, feat_layer_name="2048"
+        #     )
+        #     out.update({'Frechet Distance (FD)': metric_fid.to_dict()})
+        #     summary.append(f'FD: {metric_fid.result}')
 
         r"""Calculate psnr, ssim, lad with paired data."""
         if calculate_psnr_ssim or calculate_lsd:

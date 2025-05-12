@@ -1,17 +1,18 @@
-r"""Creates a set of audio files to test FAD calculation."""
+r"""Creates a set of audio files to test measurement calculation."""
 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import errno
 import os
+import json
+import errno
+import scipy.io.wavfile
 
 from absl import app
 from absl import flags
-
 import numpy as np
-import scipy.io.wavfile
+
 
 _SAMPLE_RATE = 16000
 
@@ -66,12 +67,14 @@ def gen_sine_wave(freq=600, length_seconds=6, sample_rate=_SAMPLE_RATE, param=No
 
 def main(argv):
     del argv  # Unused.
+    meta = {}
     for traget, count, param in [
         ("reference", 50, 0.0),
         ("paired", 50, 0.001),
         ("unpaired", 25, 0.001),
     ]:
         output_dir = os.path.join(FLAGS.test_files, "example", traget)
+        output_json = os.path.join(FLAGS.test_files, "example/reference_captions.json")
         create_dir(output_dir)
         print("output_dir:", output_dir)
         frequencies = np.linspace(100, 1000, count).tolist()
@@ -80,6 +83,15 @@ def main(argv):
             filename = os.path.join(output_dir, "sin_%.0f.wav" % freq)
             print("Creating: %s with %i samples." % (filename, samples.shape[0]))
             scipy.io.wavfile.write(filename, _SAMPLE_RATE, samples)
+            meta[filename] = {
+                'caption': f"A {freq}Hz sine wave.",
+                'window': [0, 10]
+            }
+
+    with open(output_json, "w") as f:
+        json.dump(meta, f, indent=4)
+    print(f"Write reference data and windows into {output_json}")
+        
 
 
 if __name__ == "__main__":
